@@ -6,10 +6,14 @@
 	"license": "MIT",
 	"private": true,
 	"devDependencies": {
+		"@lusc/tsconfig": "^1.2.2",
 		"prettier": "^2.7.0",
+		"rimraf": "^3.0.2",
+		"typescript": "^4.7.3",
 		"xo": "^0.50.0"
 	},
 	"scripts": {
-		"fmt": "prettier -w . && xo --fix"
+		"fmt": "prettier -w . && xo --fix",
+		"build": "rimraf dist && tsc"
 	}
 }
