@@ -1,0 +1,8 @@
+{
+	"rules": {
+		"@typescript-eslint/explicit-function-return-type": "error",
+		"@typescript-eslint/indent": "off",
+		"no-await-in-loop": "off",
+		"prefer-template": "error"
+	}
+}
