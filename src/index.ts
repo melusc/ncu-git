@@ -1,12 +1,12 @@
 import {access} from 'node:fs/promises';
-import {exit} from 'node:process';
+import {exit, stdout} from 'node:process';
 
 import meow from 'meow';
 import ncu from 'npm-check-updates';
 
 import {checkGit} from './check-git.js';
 import {upgrade} from './upgrade.js';
-import {panic} from './utils.js';
+import {blue, panic} from './utils.js';
 
 const isYarn = async (): Promise<boolean> => {
 	try {
@@ -79,6 +79,13 @@ const {flags, input} = meow(
 
 if (input.length === 0) {
 	await ncu.run({}, {cli: true});
+
+	// It prints "Use ncu -u ..." on the last line
+	// So clear previous line because this app isn't ncu
+	stdout.moveCursor(0, -1);
+	stdout.clearLine(1);
+
+	console.log('Use %s to upgrade all packages.', blue('ncu-git "*"'));
 	exit(0);
 }
 
