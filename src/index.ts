@@ -43,6 +43,7 @@ const {flags, input} = meow(
 	  --version, -v         Show version and exit
 	  --yolo                Ignore modified package.json or lock-file
 	                        Ignore non-empty staging area
+	  --reset               Do not reset package.json and lock-file when --run errors
 `,
 	{
 		importMeta: import.meta,
@@ -99,7 +100,15 @@ const useYarn
 	= flags.packageManager === 'yarn'
 	|| (flags.packageManager !== 'npm' && (await isYarn()));
 
-await checkGit(useYarn, flags.yolo ?? false);
+try {
+	await checkGit(useYarn, flags.yolo ?? false);
+} catch (error: unknown) {
+	if (error instanceof Error) {
+		panic(error.message);
+	}
+
+	throw error;
+}
 
 for (const dependency of input) {
 	await upgrade(dependency, useYarn, {

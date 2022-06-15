@@ -1,33 +1,34 @@
-import {execa} from 'execa';
+import {execa, Options} from 'execa';
 
-import {getLockFile, panic} from './utils.js';
-
-const expectEmptyStdout = async (
-	file: string,
-	args: readonly string[],
-	message: string,
-): Promise<void> => {
-	const {stdout} = await execa(file, args);
-
-	if (stdout.trim() !== '') {
-		panic(message);
-	}
-};
+import {getLockFile} from './utils.js';
 
 export const checkGit = async (
 	useYarn: boolean,
 	yolo: boolean,
+	options?: Options,
 ): Promise<void> => {
+	const expectEmptyStdout = async (
+		file: string,
+		args: readonly string[],
+		message: string,
+	): Promise<void> => {
+		const {stdout} = await execa(file, args, options);
+
+		if (stdout.trim() !== '') {
+			throw new Error(message);
+		}
+	};
+
 	try {
-		await execa('git', ['--version']);
+		await execa('git', ['--version'], options);
 	} catch {
-		panic('git was not found in path');
+		throw new Error('git was not found in path');
 	}
 
 	try {
-		await execa('git', ['status']);
+		await execa('git', ['status'], options);
 	} catch {
-		panic('Current working directory is not a git repository.');
+		throw new Error('Current working directory is not a git repository.');
 	}
 
 	if (yolo) {
@@ -50,6 +51,6 @@ export const checkGit = async (
 	await expectEmptyStdout(
 		'git',
 		['diff', '--staged'],
-		'Expected staging area to be empty',
+		'Expected staging area to be empty.',
 	);
 };

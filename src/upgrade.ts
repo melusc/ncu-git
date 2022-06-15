@@ -53,8 +53,11 @@ export const upgrade = async (
 	},
 ): Promise<void> => {
 	await ncu.run({
-		filter: dependency,
+		// "*" should match all dependencies
+		// but because it's a glob it wouldn't match slashes (e.g. @lusc/tsconfig)
+		filter: dependency === '*' ? undefined : dependency,
 		upgrade: true,
+		packageManager: useYarn ? 'yarn' : 'npm',
 	});
 
 	const diff = await getDiff();
