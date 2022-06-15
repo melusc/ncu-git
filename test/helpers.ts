@@ -56,6 +56,9 @@ export const withTemporaryDir = (packageManager: 'npm' | 'yarn'): Macro<[Cb]> =>
 		// Don't sign (and potentially ask for password for gpg)
 		await cwdExeca('git', ['config', 'commit.gpgsign', 'false']);
 
+		await cwdExeca('git', ['config', 'user.email', 'email@example.org']);
+		await cwdExeca('git', ['config', 'user.name', 'First Last']);
+
 		await cwdFs.writeFile('package.json', '{}');
 		await cwdFs.writeFile('.gitignore', 'node_modules\n');
 		await cwdExeca(packageManager, ['install']);
