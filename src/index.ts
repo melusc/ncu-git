@@ -6,6 +6,7 @@ import ncu from 'npm-check-updates';
 
 import {checkGit} from './check-git.js';
 import {upgrade} from './upgrade.js';
+import {panic} from './utils.js';
 
 const isYarn = async (): Promise<boolean> => {
 	try {
@@ -81,7 +82,15 @@ if (input.length === 0) {
 	exit(0);
 }
 
-const useYarn = flags.packageManager === 'yarn' || (await isYarn());
+try {
+	await access('package.json');
+} catch {
+	panic('No package.json in current directory.');
+}
+
+const useYarn
+	= flags.packageManager === 'yarn'
+	|| (flags.packageManager !== 'npm' && (await isYarn()));
 
 await checkGit(useYarn, flags.yolo ?? false);
 
