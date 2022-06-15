@@ -3,7 +3,7 @@ import ncu from 'npm-check-updates';
 import minVersion from 'semver/ranges/min-version.js';
 
 import {Diff, getDiff} from './diff.js';
-import {getLockFile} from './utils.js';
+import {getLockFile, panic} from './utils.js';
 
 const commit = async (diff: readonly Diff[]): Promise<void> => {
 	const formatted = diff.map(([name, oldVersion, newVersion]): string => {
@@ -40,7 +40,11 @@ const runCommand = async (
 			await execa('git', ['checkout', 'HEAD', '--', 'package.json', lockFile]);
 		}
 
-		throw error;
+		if (error instanceof Error) {
+			panic(error.message);
+		} else {
+			throw error;
+		}
 	}
 };
 

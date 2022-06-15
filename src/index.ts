@@ -43,7 +43,7 @@ const {flags, input} = meow(
 	  --version, -v         Show version and exit
 	  --yolo                Ignore modified package.json or lock-file
 	                        Ignore non-empty staging area
-	  --reset               Do not reset package.json and lock-file when --run errors
+	  --reset               Reset package.json and the lock-file when \`--run\` errors
 `,
 	{
 		importMeta: import.meta,
