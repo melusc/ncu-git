@@ -1,3 +1,5 @@
+import {readFile} from 'node:fs/promises';
+
 import {execa, execaCommand} from 'execa';
 import ncu from 'npm-check-updates';
 import minVersion from 'semver/ranges/min-version.js';
@@ -56,6 +58,7 @@ export const upgrade = async (
 		reset: boolean;
 	},
 ): Promise<void> => {
+	console.log({dependency, useYarn, flags});
 	await ncu.run({
 		// "*" should match all dependencies
 		// but because it's a glob it wouldn't match slashes (e.g. @lusc/tsconfig)
@@ -64,7 +67,10 @@ export const upgrade = async (
 		packageManager: useYarn ? 'yarn' : 'npm',
 	});
 
+	console.log(await readFile('package.json'));
+
 	const diff = await getDiff();
+	console.log(diff);
 
 	if (diff.length === 0) {
 		return;
