@@ -1,9 +1,9 @@
-import type debug from 'debug';
+import {Debugger} from 'debug';
 import {ExecaChildProcess} from 'execa';
 
 export const debugExeca = (
 	execaResult: ExecaChildProcess,
-	log: debug.Debugger,
+	log: Debugger,
 ): ExecaChildProcess => {
 	// Don't chain (result.catch().then())
 	// or result.then(() => {}, () => {})
