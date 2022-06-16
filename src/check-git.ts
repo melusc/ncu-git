@@ -1,18 +1,27 @@
-import {execa, Options} from 'execa';
+import debug from 'debug';
+import {execa, ExecaChildProcess, Options} from 'execa';
 
 import {getLockFile} from './utils.js';
+import {debugExeca} from './debug-execa.js';
+
+const log = debug('ncu-git:check-git');
 
 export const checkGit = async (
 	useYarn: boolean,
 	yolo: boolean,
 	options?: Options,
 ): Promise<void> => {
+	const execa_ = (
+		filename: string,
+		args: readonly string[] = [],
+	): ExecaChildProcess => debugExeca(execa(filename, args, options), log);
+
 	const expectEmptyStdout = async (
 		file: string,
 		args: readonly string[],
 		message: string,
 	): Promise<void> => {
-		const {stdout} = await execa(file, args, options);
+		const {stdout} = await execa_(file, args);
 
 		if (stdout.trim() !== '') {
 			throw new Error(message);
@@ -20,13 +29,13 @@ export const checkGit = async (
 	};
 
 	try {
-		await execa('git', ['--version'], options);
+		await execa_('git', ['--version']);
 	} catch {
 		throw new Error('git was not found in path');
 	}
 
 	try {
-		await execa('git', ['status'], options);
+		await execa_('git', ['status']);
 	} catch {
 		throw new Error('Current working directory is not a git repository.');
 	}

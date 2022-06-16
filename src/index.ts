@@ -1,6 +1,7 @@
 import {access} from 'node:fs/promises';
 import {exit, stdout} from 'node:process';
 
+import debug from 'debug';
 import meow from 'meow';
 import ncu from 'npm-check-updates';
 
@@ -8,16 +9,26 @@ import {checkGit} from './check-git.js';
 import {upgrade} from './upgrade.js';
 import {blue, panic} from './utils.js';
 
+const log = debug('ncu-git:index');
+
 const isYarn = async (): Promise<boolean> => {
 	try {
+		log('Accessing package-lock.json');
 		await access('package-lock.json');
+		log('package-lock.json exists');
 		return false;
-	} catch {}
+	} catch {
+		log('package-lock.json does not exist');
+	}
 
 	try {
+		log('Accessing yarn.lock');
 		await access('yarn.lock');
+		log('yarn.lock exists');
 		return true;
-	} catch {}
+	} catch {
+		log('yarn.lock does not exist');
+	}
 
 	return false;
 };
@@ -78,6 +89,8 @@ const parsedArgv = meow(
 	},
 );
 
+log(parsedArgv);
+
 const {flags, input} = parsedArgv;
 
 if (input.length === 0) {
@@ -101,6 +114,8 @@ try {
 const useYarn
 	= flags.packageManager === 'yarn'
 	|| (flags.packageManager !== 'npm' && (await isYarn()));
+
+log('useYarn === %s', useYarn);
 
 try {
 	await checkGit(useYarn, flags.yolo ?? false);
