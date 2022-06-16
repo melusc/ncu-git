@@ -64,13 +64,19 @@ test(
 			'@lusc/tsconfig@1.0.0',
 			'@lusc/truth-table@1.0.0',
 		]);
+
+		console.log('yarn done');
+
 		await execa('git', [
 			'commit',
 			'-am',
 			'"Add @lusc/tsconfig and @lusc/truth-table"',
 		]);
 
+		console.log('git done');
+
 		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		console.log('node done');
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(
 			stdout,
