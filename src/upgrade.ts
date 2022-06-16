@@ -1,9 +1,13 @@
+import debug from 'debug';
 import {execa, execaCommand} from 'execa';
 import ncu from 'npm-check-updates';
 import minVersion from 'semver/ranges/min-version.js';
 
+import {debugExeca} from './debug-execa.js';
 import {Diff, getDiff} from './diff.js';
 import {getLockFile, panic} from './utils.js';
+
+const log = debug('ncu-git:upgrade');
 
 const commit = async (diff: readonly Diff[]): Promise<void> => {
 	const formatted = diff.map(([name, oldVersion, newVersion]): string => {
@@ -20,9 +24,12 @@ const commit = async (diff: readonly Diff[]): Promise<void> => {
 		return `Bump ${name} from ${cleanOld.version} to ${cleanNew.version}`;
 	});
 
-	await execa('git', ['commit', '-m', formatted.join('\n')], {
-		stdio: 'inherit',
-	});
+	await debugExeca(
+		execa('git', ['commit', '-m', formatted.join('\n')], {
+			stdio: 'inherit',
+		}),
+		log,
+	);
 };
 
 const runCommand = async (
@@ -31,13 +38,20 @@ const runCommand = async (
 	lockFile: string,
 ): Promise<void> => {
 	try {
-		await execaCommand(command, {stdio: 'inherit', shell: true});
+		await debugExeca(
+			execaCommand(command, {stdio: 'inherit', shell: true}),
+			log,
+		);
 	} catch (error: unknown) {
 		console.error('An error occured running `%s`', command);
 
 		if (reset) {
-			await execa('git', ['reset', '-q', 'HEAD', '--', '.']);
-			await execa('git', ['checkout', 'HEAD', '--', 'package.json', lockFile]);
+			log('Resetting');
+			await debugExeca(execa('git', ['reset', '-q', 'HEAD', '--', '.']), log);
+			await debugExeca(
+				execa('git', ['checkout', 'HEAD', '--', 'package.json', lockFile]),
+				log,
+			);
 		}
 
 		if (error instanceof Error) {
@@ -65,15 +79,23 @@ export const upgrade = async (
 	});
 
 	const diff = await getDiff();
+	log('Diff %o', diff);
 
 	if (diff.length === 0) {
 		return;
 	}
 
-	await execa(useYarn ? 'yarn' : 'npm', ['install'], {stdio: 'inherit'});
+	await debugExeca(
+		execa(useYarn ? 'yarn' : 'npm', ['install'], {stdio: 'inherit'}),
+		log,
+	);
 
 	const lockFile = getLockFile(useYarn);
-	await execa('git', ['add', lockFile, 'package.json'], {stdio: 'inherit'});
+
+	await debugExeca(
+		execa('git', ['add', lockFile, 'package.json'], {stdio: 'inherit'}),
+		log,
+	);
 
 	for (const command of flags.run) {
 		await runCommand(command, flags.reset, lockFile);

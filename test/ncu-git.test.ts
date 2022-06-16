@@ -18,7 +18,7 @@ test(
 		await execa('yarn', ['add', '-D', '@lusc/tsconfig']);
 		await execa('git', ['commit', '-am', '"Add @lusc/tsconfig"']);
 
-		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		await execa('node', [indexJs, '"*"'], {stdin: 'inherit'});
 
 		const {stdout} = await execa('git', ['log', '--format=%s']);
 
@@ -33,7 +33,7 @@ test(
 		await execa('yarn', ['add', '-D', '@lusc/tsconfig@1.0.0']);
 		await execa('git', ['commit', '-am', '"Add @lusc/tsconfig"']);
 
-		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		await execa('node', [indexJs, '"*"'], {stdin: 'inherit'});
 
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(stdout, /^Bump @lusc\/tsconfig from 1\.0\.0 to \d+\.\d+\.\d+$/m);
@@ -47,7 +47,7 @@ test(
 		await execa('npm', ['i', '@lusc/tsconfig@1.0.0']);
 		await execa('git', ['commit', '-am', '"Add @lusc/tsconfig"']);
 
-		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		await execa('node', [indexJs, '"*"'], {stdin: 'inherit'});
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(stdout, /^Bump @lusc\/tsconfig from 1\.0\.0 to \d+\.\d+\.\d+$/m);
 	},
@@ -62,13 +62,16 @@ test(
 			'@lusc/tsconfig@1.0.0',
 			'@lusc/truth-table@1.0.0',
 		]);
+
 		await execa('git', [
 			'commit',
 			'-am',
 			'"Add @lusc/tsconfig and @lusc/truth-table"',
 		]);
 
-		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		await execa('node', [indexJs, '"*"'], {
+			stdin: 'inherit',
+		});
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(
 			stdout,
@@ -116,7 +119,7 @@ test(
 
 		await t.throwsAsync(
 			async () => {
-				await execa('node', [indexJs, '*', '-r', '"node index.js"'], {
+				await execa('node', [indexJs, '"*"', '-r', '"node index.js"'], {
 					stdin: 'inherit',
 				});
 			},
@@ -144,7 +147,7 @@ test(
 			async () => {
 				await execa(
 					'node',
-					[indexJs, '*', '--no-reset', '-r', '"node index.js"'],
+					[indexJs, '"*"', '--no-reset', '-r', '"node index.js"'],
 					{
 						stdin: 'inherit',
 					},
@@ -175,7 +178,7 @@ test(
 			async () => {
 				await execa(
 					'node',
-					[indexJs, '*', '--no-reset', '-r', '"node index.js"'],
+					[indexJs, '"*"', '--no-reset', '-r', '"node index.js"'],
 					{
 						stdin: 'inherit',
 					},
@@ -201,7 +204,7 @@ test(
 		await t.notThrowsAsync(async () => {
 			await execa(
 				'node',
-				[indexJs, '*', '--no-reset', '-r', '"node index.js"', '--yolo'],
+				[indexJs, '"*"', '--no-reset', '-r', '"node index.js"', '--yolo'],
 				{
 					stdin: 'inherit',
 				},

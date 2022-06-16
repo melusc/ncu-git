@@ -1,10 +1,14 @@
-import {mkdtemp, writeFile, rm, readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 import test, {ExecutionContext, Macro} from 'ava';
+import debug from 'debug';
 import {execa, ExecaChildProcess, Options} from 'execa';
+
+import {debugExeca} from '../src/debug-execa.js';
 
 type Execa = (
 	filename: string,
@@ -31,23 +35,35 @@ export const withTemporaryDir = (packageManager: 'npm' | 'yarn'): Macro<[Cb]> =>
 			`${await mkdtemp(join(tmpdir(), 'ncu-git-'))}/`,
 		);
 
+		// Because the titles are too long
+		const hashTitle = createHash('sha256')
+			.update(t.title)
+			.digest('hex')
+			.slice(0, 10);
+
+		const log = debug(`ncu-git:test:${hashTitle}`);
+		log(t.title);
+
 		const cwdExeca: Execa = (filename, args, options = {}) => {
 			// @ts-expect-error cwd is readonly
 			options.cwd = temporaryDir;
 			// @ts-expect-error shell is readonly
 			options.shell = true;
 
-			return execa(filename, args, options);
+			return debugExeca(execa(filename, args, options), log);
 		};
 
 		const cwdFs: Fs = {
 			async writeFile(path, content) {
+				log('Write %s to %s', content, path);
 				return writeFile(new URL(path, temporaryDir), content, 'utf8');
 			},
 			async readFile(path) {
+				log('Read %s', path);
 				return readFile(new URL(path, temporaryDir), 'utf8');
 			},
 			async rm(path, options) {
+				log('Remove %s', path);
 				return rm(new URL(path, temporaryDir), options);
 			},
 		};
