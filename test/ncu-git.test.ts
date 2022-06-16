@@ -83,7 +83,9 @@ test(
 
 		console.log('git done');
 
-		const {stdout: nodeStdout} = await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		const {stdout: nodeStdout} = await execa('node', [indexJs, '*'], {
+			stdin: 'inherit',
+		});
 		console.log('node done:\n-------\n%s\n------\n', nodeStdout);
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(
