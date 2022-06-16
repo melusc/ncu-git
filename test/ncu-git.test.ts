@@ -56,7 +56,7 @@ test(
 test(
 	'Multiple dependencies',
 	withTemporaryDir('yarn'),
-	async (t, _cwd, _fs, execa) => {
+	async (t, _cwd, fs, execa) => {
 		console.log(_cwd);
 
 		await execa('yarn', [
@@ -64,6 +64,14 @@ test(
 			'@lusc/tsconfig@1.0.0',
 			'@lusc/truth-table@1.0.0',
 		]);
+
+		console.log(
+			await fs.readFile('package.json'),
+			await fs.readFile('yarn.lock'),
+		);
+
+		const {stdout: diffStdout} = await execa('git', ['--no-pager', 'diff']);
+		console.log(diffStdout);
 
 		console.log('yarn done');
 
