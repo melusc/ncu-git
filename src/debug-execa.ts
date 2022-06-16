@@ -10,13 +10,13 @@ export const debugExeca = (
 	// Because .catch on its own has types for Typescript
 	void execaResult.catch(error => {
 		log('Error: $ %s', error.escapedCommand);
-		log(error.stdout);
-		log(error.stderr);
+		log('Stdout: %s\n', error.stdout);
+		log('Stderr: %s\n', error.stderr);
 	});
 	execaResult.then(
 		r => {
 			log('$ %s', r.escapedCommand);
-			log(r.stdout);
+			log('Stdout: %s\n', r.stdout);
 		},
 		() => {
 			/* No unhandled rejection */
