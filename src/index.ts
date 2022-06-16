@@ -98,9 +98,9 @@ try {
 	panic('No package.json in current directory.');
 }
 
-const useYarn =
-	flags.packageManager === 'yarn' ||
-	(flags.packageManager !== 'npm' && (await isYarn()));
+const useYarn
+	= flags.packageManager === 'yarn'
+	|| (flags.packageManager !== 'npm' && (await isYarn()));
 
 try {
 	await checkGit(useYarn, flags.yolo ?? false);
