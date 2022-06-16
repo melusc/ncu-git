@@ -63,8 +63,6 @@ test(
 			'@lusc/truth-table@1.0.0',
 		]);
 
-		await execa('git', ['--no-pager', 'diff']);
-
 		await execa('git', [
 			'commit',
 			'-am',
