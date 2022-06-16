@@ -1,11 +1,11 @@
+import debug from 'debug';
 import {execa, execaCommand} from 'execa';
 import ncu from 'npm-check-updates';
 import minVersion from 'semver/ranges/min-version.js';
-import debug from 'debug';
 
+import {debugExeca} from './debug-execa.js';
 import {Diff, getDiff} from './diff.js';
 import {getLockFile, panic} from './utils.js';
-import {debugExeca} from './debug-execa.js';
 
 const log = debug('ncu-git:upgrade');
 

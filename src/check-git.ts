@@ -1,8 +1,8 @@
 import debug from 'debug';
 import {execa, ExecaChildProcess, Options} from 'execa';
 
-import {getLockFile} from './utils.js';
 import {debugExeca} from './debug-execa.js';
+import {getLockFile} from './utils.js';
 
 const log = debug('ncu-git:check-git');
 
