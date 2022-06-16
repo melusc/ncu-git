@@ -75,6 +75,9 @@ test(
 
 		console.log('yarn done');
 
+		const {stdout: ncuStdout} = await execa('yarn', ['ncu']);
+		console.log(ncuStdout);
+
 		await execa('git', [
 			'commit',
 			'-am',
