@@ -57,6 +57,8 @@ test(
 	'Multiple dependencies',
 	withTemporaryDir('yarn'),
 	async (t, _cwd, _fs, execa) => {
+		console.log(_cwd);
+
 		await execa('yarn', [
 			'add',
 			'@lusc/tsconfig@1.0.0',

@@ -78,9 +78,9 @@ Command failed with exit code 1: node index.js
 
 $ cat package.json
 {
-	"dependencies": {
-		"react": "17.0.0"
-	}
+  "dependencies": {
+    "react": "17.0.0"
+  }
 }
 ```
 
@@ -93,9 +93,9 @@ Command failed with exit code 1: node index.js
 # It wasn't reset and is still staged
 $ cat package.json
 {
-	"dependencies": {
-		"react": "18.2.0"
-	}
+  "dependencies": {
+    "react": "18.2.0"
+  }
 }
 
 # Fix the errors from upgrading
