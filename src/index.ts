@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import {access} from 'node:fs/promises';
 import {exit, stdout} from 'node:process';
 
