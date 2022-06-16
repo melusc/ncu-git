@@ -56,24 +56,14 @@ test(
 test(
 	'Multiple dependencies',
 	withTemporaryDir('yarn'),
-	async (t, _cwd, fs, execa) => {
-		console.log(_cwd);
-
+	async (t, _cwd, _fs, execa) => {
 		await execa('yarn', [
 			'add',
 			'@lusc/tsconfig@1.0.0',
 			'@lusc/truth-table@1.0.0',
 		]);
 
-		console.log(
-			await fs.readFile('package.json'),
-			await fs.readFile('yarn.lock'),
-		);
-
-		const {stdout: diffStdout} = await execa('git', ['--no-pager', 'diff']);
-		console.log(diffStdout);
-
-		console.log('yarn done');
+		await execa('git', ['--no-pager', 'diff']);
 
 		await execa('git', [
 			'commit',
@@ -81,12 +71,9 @@ test(
 			'"Add @lusc/tsconfig and @lusc/truth-table"',
 		]);
 
-		console.log('git done');
-
-		const {stdout: nodeStdout} = await execa('node', [indexJs, '"*"'], {
+		await execa('node', [indexJs, '"*"'], {
 			stdin: 'inherit',
 		});
-		console.log('node done:\n-------\n%s\n------\n', nodeStdout);
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(
 			stdout,

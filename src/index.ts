@@ -1,5 +1,5 @@
 import {access} from 'node:fs/promises';
-import {argv, exit, stdout} from 'node:process';
+import {exit, stdout} from 'node:process';
 
 import meow from 'meow';
 import ncu from 'npm-check-updates';
@@ -22,7 +22,7 @@ const isYarn = async (): Promise<boolean> => {
 	return false;
 };
 
-const {flags, input} = meow(
+const parsedArgv = meow(
 	`
 	Usage
 	  $ ncugit <packages>
@@ -78,7 +78,7 @@ const {flags, input} = meow(
 	},
 );
 
-console.log({flags, input, argv});
+const {flags, input} = parsedArgv;
 
 if (input.length === 0) {
 	await ncu.run({}, {cli: true});
