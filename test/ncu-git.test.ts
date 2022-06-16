@@ -83,7 +83,7 @@ test(
 
 		console.log('git done');
 
-		const {stdout: nodeStdout} = await execa('node', [indexJs, '*'], {
+		const {stdout: nodeStdout} = await execa('node', [indexJs, '"*"'], {
 			stdin: 'inherit',
 		});
 		console.log('node done:\n-------\n%s\n------\n', nodeStdout);
