@@ -75,9 +75,6 @@ test(
 
 		console.log('yarn done');
 
-		const {stdout: ncuStdout} = await execa('yarn', ['ncu']);
-		console.log(ncuStdout);
-
 		await execa('git', [
 			'commit',
 			'-am',
@@ -86,8 +83,8 @@ test(
 
 		console.log('git done');
 
-		await execa('node', [indexJs, '*'], {stdin: 'inherit'});
-		console.log('node done');
+		const {stdout: nodeStdout} = await execa('node', [indexJs, '*'], {stdin: 'inherit'});
+		console.log('node done:\n-------\n%s\n------\n', nodeStdout);
 		const {stdout} = await execa('git', ['--no-pager', 'log', '--format=%s']);
 		t.regex(
 			stdout,
