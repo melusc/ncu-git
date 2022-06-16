@@ -1,5 +1,5 @@
 import {access} from 'node:fs/promises';
-import {exit, stdout} from 'node:process';
+import {argv, exit, stdout} from 'node:process';
 
 import meow from 'meow';
 import ncu from 'npm-check-updates';
@@ -78,6 +78,8 @@ const {flags, input} = meow(
 	},
 );
 
+console.log({flags, input, argv});
+
 if (input.length === 0) {
 	await ncu.run({}, {cli: true});
 
@@ -96,9 +98,9 @@ try {
 	panic('No package.json in current directory.');
 }
 
-const useYarn
-	= flags.packageManager === 'yarn'
-	|| (flags.packageManager !== 'npm' && (await isYarn()));
+const useYarn =
+	flags.packageManager === 'yarn' ||
+	(flags.packageManager !== 'npm' && (await isYarn()));
 
 try {
 	await checkGit(useYarn, flags.yolo ?? false);

@@ -67,7 +67,7 @@ export const upgrade = async (
 		packageManager: useYarn ? 'yarn' : 'npm',
 	});
 
-	console.log(await readFile('package.json'));
+	console.log(await readFile('package.json', 'utf8'));
 
 	const diff = await getDiff();
 	console.log(diff);
