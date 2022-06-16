@@ -7,10 +7,19 @@
 	"publishConfig": {
 		"access": "public"
 	},
+	"engines": {
+		"node": "^16 || ^18"
+	},
+	"repository": "melusc/ncu-git",
 	"type": "module",
 	"bin": {
 		"ncu-git": "dist/src/index.js"
 	},
+	"keywords": [
+		"ncu",
+		"git",
+		"dependabot"
+	],
 	"devDependencies": {
 		"@ava/typescript": "^3.0.1",
 		"@lusc/tsconfig": "^1.2.2",
