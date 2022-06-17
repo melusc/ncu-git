@@ -44,7 +44,7 @@
 	"dependencies": {
 		"execa": "^6.1.0",
 		"meow": "^10.1.2",
-		"npm-check-updates": "^14.0.0",
+		"npm-check-updates": "^14.0.1",
 		"semver": "^7.3.7"
 	},
 	"ava": {
