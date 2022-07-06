@@ -1,17 +1,21 @@
 import test from 'ava';
 
 import {checkGit} from '../src/check-git.js';
+import {getPackageManager} from '../src/utils.js';
 
 import {withTemporaryDir} from './helpers.js';
 
+const yarnPackageManager = getPackageManager(true);
+const npmPackageManager = getPackageManager(false);
+
 test('Everything okay yarn', withTemporaryDir('yarn'), async (t, cwd) => {
-	await checkGit(true, false, {cwd});
+	await checkGit(yarnPackageManager, false, {cwd});
 
 	t.pass();
 });
 
 test('Everything okay npm', withTemporaryDir('npm'), async (t, cwd) => {
-	await checkGit(false, false, {cwd});
+	await checkGit(npmPackageManager, false, {cwd});
 
 	t.pass();
 });
@@ -25,7 +29,7 @@ test(
 
 		await t.throwsAsync(
 			async () => {
-				await checkGit(true, false, {cwd});
+				await checkGit(yarnPackageManager, false, {cwd});
 			},
 			{
 				message: 'Expected staging area to be empty.',
@@ -42,7 +46,7 @@ test(
 
 		await t.throwsAsync(
 			async () => {
-				await checkGit(true, false, {cwd});
+				await checkGit(yarnPackageManager, false, {cwd});
 			},
 			{
 				message: 'Expected "yarn.lock" to be unmodified.',
@@ -59,7 +63,7 @@ test(
 
 		await t.throwsAsync(
 			async () => {
-				await checkGit(false, false, {cwd});
+				await checkGit(npmPackageManager, false, {cwd});
 			},
 			{
 				message: 'Expected "package-lock.json" to be unmodified.',
@@ -76,7 +80,7 @@ test(
 
 		await t.throwsAsync(
 			async () => {
-				await checkGit(true, false, {cwd});
+				await checkGit(yarnPackageManager, false, {cwd});
 			},
 			{
 				message: 'Expected "package.json" to be unmodified.',
@@ -92,7 +96,7 @@ test('Yolo', withTemporaryDir('yarn'), async (t, cwd, {writeFile}, execa) => {
 	await execa('git', ['add', 'index.ts']);
 
 	await t.notThrowsAsync(async () => {
-		await checkGit(true, true, {cwd});
+		await checkGit(yarnPackageManager, true, {cwd});
 	});
 });
 
@@ -101,7 +105,7 @@ test('Not a git repository', withTemporaryDir('yarn'), async (t, cwd, {rm}) => {
 
 	await t.throwsAsync(
 		async () => {
-			await checkGit(true, false, {cwd});
+			await checkGit(yarnPackageManager, false, {cwd});
 		},
 		{
 			message: 'Current working directory is not a git repository.',

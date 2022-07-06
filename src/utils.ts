@@ -11,5 +11,18 @@ export const panic = (m: string): void => {
 	exit(1);
 };
 
-export const getLockFile = (useYarn: boolean): string =>
-	useYarn ? 'yarn.lock' : 'package-lock.json';
+export type PackageManager = {
+	readonly lockfile: 'yarn.lock' | 'package-lock.json';
+	readonly packageManagerFile: 'yarn' | 'npm';
+};
+
+export const getPackageManager = (useYarn: boolean): PackageManager =>
+	useYarn
+		? {
+				lockfile: 'yarn.lock',
+				packageManagerFile: 'yarn',
+		  }
+		: {
+				lockfile: 'package-lock.json',
+				packageManagerFile: 'npm',
+		  };

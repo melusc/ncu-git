@@ -5,7 +5,7 @@ import minVersion from 'semver/ranges/min-version.js';
 
 import {debugExeca} from './debug-execa.js';
 import {Diff, getDiff} from './diff.js';
-import {getLockFile, panic} from './utils.js';
+import {PackageManager, panic} from './utils.js';
 
 const log = debug('ncu-git:upgrade');
 
@@ -35,10 +35,8 @@ const commit = async (diff: readonly Diff[]): Promise<void> => {
 const runCommand = async (
 	command: string,
 	reset: boolean,
-	useYarn: boolean,
+	{lockfile, packageManagerFile}: PackageManager,
 ): Promise<void> => {
-	const lockFile = getLockFile(useYarn);
-
 	try {
 		await debugExeca(
 			execaCommand(command, {stdio: 'inherit', shell: true}),
@@ -51,10 +49,10 @@ const runCommand = async (
 			log('Resetting');
 			await debugExeca(execa('git', ['reset', '-q', 'HEAD', '--', '.']), log);
 			await debugExeca(
-				execa('git', ['checkout', 'HEAD', '--', 'package.json', lockFile]),
+				execa('git', ['checkout', 'HEAD', '--', 'package.json', lockfile]),
 				log,
 			);
-			await debugExeca(execa(useYarn ? 'yarn' : 'npm', ['install']), log);
+			await debugExeca(execa(packageManagerFile, ['install']), log);
 		}
 
 		if (error instanceof Error) {
@@ -67,18 +65,20 @@ const runCommand = async (
 
 export const upgrade = async (
 	dependency: string,
-	useYarn: boolean,
+	packageManager: PackageManager,
 	flags: {
 		run: string[];
 		reset: boolean;
 	},
 ): Promise<void> => {
+	const {packageManagerFile, lockfile} = packageManager;
+
 	await ncu.run({
 		// "*" should match all dependencies
 		// but because it's a glob it wouldn't match slashes (e.g. @lusc/tsconfig)
 		filter: dependency === '*' ? undefined : dependency,
 		upgrade: true,
-		packageManager: useYarn ? 'yarn' : 'npm',
+		packageManager: packageManagerFile,
 	});
 
 	const diff = await getDiff();
@@ -89,19 +89,17 @@ export const upgrade = async (
 	}
 
 	await debugExeca(
-		execa(useYarn ? 'yarn' : 'npm', ['install'], {stdio: 'inherit'}),
+		execa(packageManagerFile, ['install'], {stdio: 'inherit'}),
 		log,
 	);
 
-	const lockFile = getLockFile(useYarn);
-
 	await debugExeca(
-		execa('git', ['add', lockFile, 'package.json'], {stdio: 'inherit'}),
+		execa('git', ['add', lockfile, 'package.json'], {stdio: 'inherit'}),
 		log,
 	);
 
 	for (const command of flags.run) {
-		await runCommand(command, flags.reset, useYarn);
+		await runCommand(command, flags.reset, packageManager);
 	}
 
 	await commit(diff);

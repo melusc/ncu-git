@@ -3,6 +3,7 @@
 		"@typescript-eslint/explicit-function-return-type": "error",
 		"@typescript-eslint/indent": "off",
 		"no-await-in-loop": "off",
-		"prefer-template": "error"
+		"prefer-template": "error",
+		"no-mixed-spaces-and-tabs": "off"
 	}
 }

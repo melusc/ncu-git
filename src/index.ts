@@ -9,7 +9,7 @@ import ncu from 'npm-check-updates';
 
 import {checkGit} from './check-git.js';
 import {upgrade} from './upgrade.js';
-import {blue, panic} from './utils.js';
+import {blue, getPackageManager, panic} from './utils.js';
 
 const log = debug('ncu-git:index');
 
@@ -119,8 +119,10 @@ const useYarn
 
 log('useYarn === %s', useYarn);
 
+const packageManager = getPackageManager(useYarn);
+
 try {
-	await checkGit(useYarn, flags.yolo ?? false);
+	await checkGit(packageManager, flags.yolo ?? false);
 } catch (error: unknown) {
 	if (error instanceof Error) {
 		panic(error.message);
@@ -130,7 +132,7 @@ try {
 }
 
 for (const dependency of input) {
-	await upgrade(dependency, useYarn, {
+	await upgrade(dependency, packageManager, {
 		run: flags.run ?? [],
 		reset: flags.reset,
 	});

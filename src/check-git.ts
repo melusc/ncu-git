@@ -2,12 +2,12 @@ import debug from 'debug';
 import {execa, ExecaChildProcess, Options} from 'execa';
 
 import {debugExeca} from './debug-execa.js';
-import {getLockFile} from './utils.js';
+import {PackageManager} from './utils.js';
 
 const log = debug('ncu-git:check-git');
 
 export const checkGit = async (
-	useYarn: boolean,
+	{lockfile}: PackageManager,
 	yolo: boolean,
 	options?: Options,
 ): Promise<void> => {
@@ -50,11 +50,10 @@ export const checkGit = async (
 		'Expected "package.json" to be unmodified.',
 	);
 
-	const lockFile = getLockFile(useYarn);
 	await expectEmptyStdout(
 		'git',
-		['diff', '--name-only', '--', lockFile],
-		`Expected "${lockFile}" to be unmodified.`,
+		['diff', '--name-only', '--', lockfile],
+		`Expected "${lockfile}" to be unmodified.`,
 	);
 
 	await expectEmptyStdout(
