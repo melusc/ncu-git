@@ -130,6 +130,11 @@ test(
 
 		const {stdout} = await execa('git', ['diff', '--name-only']);
 		t.regex(stdout, /^\s*$/);
+
+		const packageJson = await fs.readFile(
+			'node_modules/@lusc/tsconfig/package.json',
+		);
+		t.is(JSON.parse(packageJson).version, '1.0.0');
 	},
 );
 
@@ -160,6 +165,11 @@ test(
 
 		const {stdout} = await execa('git', ['diff', '--name-only', '--staged']);
 		t.regex(stdout, /^package\.json$\s^yarn\.lock$/m);
+
+		const packageJson = await fs.readFile(
+			'node_modules/@lusc/tsconfig/package.json',
+		);
+		t.not(JSON.parse(packageJson).version, '1.0.0');
 	},
 );
 

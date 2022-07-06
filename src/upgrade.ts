@@ -35,8 +35,10 @@ const commit = async (diff: readonly Diff[]): Promise<void> => {
 const runCommand = async (
 	command: string,
 	reset: boolean,
-	lockFile: string,
+	useYarn: boolean,
 ): Promise<void> => {
+	const lockFile = getLockFile(useYarn);
+
 	try {
 		await debugExeca(
 			execaCommand(command, {stdio: 'inherit', shell: true}),
@@ -52,6 +54,7 @@ const runCommand = async (
 				execa('git', ['checkout', 'HEAD', '--', 'package.json', lockFile]),
 				log,
 			);
+			await debugExeca(execa(useYarn ? 'yarn' : 'npm', ['install']), log);
 		}
 
 		if (error instanceof Error) {
@@ -98,7 +101,7 @@ export const upgrade = async (
 	);
 
 	for (const command of flags.run) {
-		await runCommand(command, flags.reset, lockFile);
+		await runCommand(command, flags.reset, useYarn);
 	}
 
 	await commit(diff);
