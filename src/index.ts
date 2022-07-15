@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import {access} from 'node:fs/promises';
-import {exit, stdout} from 'node:process';
+import {stdout} from 'node:process';
+import {clearLine, moveCursor} from 'node:readline';
+import {promisify} from 'node:util';
 
 import debug from 'debug';
 import meow from 'meow';
@@ -12,6 +14,8 @@ import {upgrade} from './upgrade.js';
 import {blue, getPackageManager, panic} from './utils.js';
 
 const log = debug('ncu-git:index');
+const pClearLine = promisify(clearLine);
+const pMoveCursor = promisify(moveCursor);
 
 const isYarn = async (): Promise<boolean> => {
 	try {
@@ -96,44 +100,48 @@ log(parsedArgv);
 const {flags, input} = parsedArgv;
 
 if (input.length === 0) {
-	await ncu.run({}, {cli: true});
+	await ncu.run(
+		{
+			format: [],
+		},
+		{cli: true},
+	);
 
 	// It prints "Use ncu -u ..." on the last line
 	// So clear previous line because this app isn't ncu
-	stdout.moveCursor(0, -1);
-	stdout.clearLine(1);
+	await pMoveCursor(stdout, 0, -1);
+	await pClearLine(stdout, 1);
 
 	console.log('Use %s to upgrade all packages.', blue('ncu-git "*"'));
-	exit(0);
-}
-
-try {
-	await access('package.json');
-} catch {
-	panic('No package.json in current directory.');
-}
-
-const useYarn
-	= flags.packageManager === 'yarn'
-	|| (flags.packageManager !== 'npm' && (await isYarn()));
-
-log('useYarn === %s', useYarn);
-
-const packageManager = getPackageManager(useYarn);
-
-try {
-	await checkGit(packageManager, flags.yolo ?? false);
-} catch (error: unknown) {
-	if (error instanceof Error) {
-		panic(error.message);
+} else {
+	try {
+		await access('package.json');
+	} catch {
+		panic('No package.json in current directory.');
 	}
 
-	throw error;
-}
+	const useYarn
+		= flags.packageManager === 'yarn'
+		|| (flags.packageManager !== 'npm' && (await isYarn()));
 
-for (const dependency of input) {
-	await upgrade(dependency, packageManager, {
-		run: flags.run ?? [],
-		reset: flags.reset,
-	});
+	log('useYarn === %s', useYarn);
+
+	const packageManager = getPackageManager(useYarn);
+
+	try {
+		await checkGit(packageManager, flags.yolo ?? false);
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			panic(error.message);
+		}
+
+		throw error;
+	}
+
+	for (const dependency of input) {
+		await upgrade(dependency, packageManager, {
+			run: flags.run ?? [],
+			reset: flags.reset,
+		});
+	}
 }

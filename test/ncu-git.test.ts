@@ -226,3 +226,17 @@ test(
 		t.regex(stdout2, /^\s*$/);
 	},
 );
+
+test(
+	'without any packages passed it should show available updates instead',
+	withTemporaryDir('yarn'),
+	async (t, _cwd, _fs, execa) => {
+		await execa('yarn', ['add', '@lusc/tsconfig@1.0.0']);
+
+		const {stdout} = await execa('node', [indexJs], {
+			stdin: 'inherit',
+		});
+
+		t.regex(stdout, /@lusc\/tsconfig\s+1.0.0/);
+	},
+);

@@ -84,6 +84,7 @@ export const withTemporaryDir = (packageManager: 'npm' | 'yarn'): Macro<[Cb]> =>
 		try {
 			await run(t, temporaryDir, cwdFs, cwdExeca);
 		} finally {
+			log(`Removing ${temporaryDir.href}`);
 			await rm(temporaryDir, {
 				recursive: true,
 			});
