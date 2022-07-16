@@ -8,10 +8,11 @@ import {promisify} from 'node:util';
 import debug from 'debug';
 import meow from 'meow';
 import ncu from 'npm-check-updates';
+import pc from 'picocolors';
 
 import {checkGit} from './check-git.js';
 import {upgrade} from './upgrade.js';
-import {blue, getPackageManager, panic} from './utils.js';
+import {getPackageManager, panic} from './utils.js';
 
 const log = debug('ncu-git:index');
 const pClearLine = promisify(clearLine);
@@ -112,7 +113,7 @@ if (input.length === 0) {
 	await pMoveCursor(stdout, 0, -1);
 	await pClearLine(stdout, 1);
 
-	console.log('Use %s to upgrade all packages.', blue('ncu-git "*"'));
+	console.log('Use %s to upgrade all packages.', pc.blue('ncu-git "*"'));
 } else {
 	try {
 		await access('package.json');
