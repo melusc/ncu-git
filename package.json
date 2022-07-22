@@ -24,7 +24,7 @@
 		"@ava/typescript": "^3.0.1",
 		"@lusc/tsconfig": "^1.2.2",
 		"@types/debug": "^4.1.7",
-		"@types/node": "^18.0.4",
+		"@types/node": "^18.0.6",
 		"@types/semver": "^7.3.10",
 		"ava": "^4.3.1",
 		"debug": "^4.3.4",
