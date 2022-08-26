@@ -1,5 +1,5 @@
-import {Debugger} from 'debug';
-import {ExecaChildProcess} from 'execa';
+import type {Debugger} from 'debug';
+import type {ExecaChildProcess} from 'execa';
 
 export const debugExeca = (
 	execaResult: ExecaChildProcess,

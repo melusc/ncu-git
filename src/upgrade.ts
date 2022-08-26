@@ -4,8 +4,8 @@ import ncu from 'npm-check-updates';
 import minVersion from 'semver/ranges/min-version.js';
 
 import {debugExeca} from './debug-execa.js';
-import {Diff, getDiff} from './diff.js';
-import {PackageManager, panic} from './utils.js';
+import {type Diff, getDiff} from './diff.js';
+import {type PackageManager, panic} from './utils.js';
 
 const log = debug('ncu-git:upgrade');
 
