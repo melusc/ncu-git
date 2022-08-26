@@ -4,9 +4,9 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-import test, {ExecutionContext, Macro} from 'ava';
+import test, {type ExecutionContext, type Macro} from 'ava';
 import debug from 'debug';
-import {execa, ExecaChildProcess, Options} from 'execa';
+import {execa, type ExecaChildProcess, type Options} from 'execa';
 
 import {debugExeca} from '../src/debug-execa.js';
 
