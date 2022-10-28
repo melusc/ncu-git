@@ -44,7 +44,7 @@
 	"dependencies": {
 		"execa": "^6.1.0",
 		"meow": "^11.0.0",
-		"npm-check-updates": "^16.3.14",
+		"npm-check-updates": "^16.3.15",
 		"picocolors": "^1.0.0",
 		"semver": "^7.3.8"
 	},
