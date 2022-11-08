@@ -8,13 +8,11 @@
 		"access": "public"
 	},
 	"engines": {
-		"node": "^16 || ^18"
+		"node": "^16 || >=18"
 	},
 	"repository": "melusc/ncu-git",
 	"type": "module",
-	"bin": {
-		"ncu-git": "dist/src/index.js"
-	},
+	"bin": "dist/src/index.js",
 	"keywords": [
 		"ncu",
 		"git",
