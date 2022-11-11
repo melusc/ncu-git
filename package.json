@@ -42,7 +42,7 @@
 	"dependencies": {
 		"execa": "^6.1.0",
 		"meow": "^11.0.0",
-		"npm-check-updates": "^16.3.16",
+		"npm-check-updates": "^16.3.18",
 		"picocolors": "^1.0.0",
 		"semver": "^7.3.8"
 	},
