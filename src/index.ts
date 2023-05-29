@@ -68,20 +68,20 @@ const parsedArgv = meow(
 		allowUnknownFlags: false,
 		flags: {
 			help: {
-				alias: 'h',
+				shortFlag: 'h',
 				type: 'boolean',
 			},
 			run: {
-				alias: 'r',
+				shortFlag: 'r',
 				type: 'string',
 				isMultiple: true,
 			},
 			version: {
-				alias: 'v',
+				shortFlag: 'v',
 				type: 'boolean',
 			},
 			packageManager: {
-				alias: 'p',
+				shortFlag: 'p',
 				type: 'string',
 			},
 			reset: {

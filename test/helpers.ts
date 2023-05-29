@@ -44,6 +44,7 @@ export const withTemporaryDir = (packageManager: 'npm' | 'yarn'): Macro<[Cb]> =>
 		const log = debug(`ncu-git:test:${hashTitle}`);
 		log(t.title);
 
+		// eslint-disable-next-line @typescript-eslint/promise-function-async
 		const cwdExeca: Execa = (filename, args, options = {}) => {
 			// @ts-expect-error cwd is readonly
 			options.cwd = temporaryDir;
@@ -75,9 +76,12 @@ export const withTemporaryDir = (packageManager: 'npm' | 'yarn'): Macro<[Cb]> =>
 		await cwdExeca('git', ['config', 'user.email', 'email@example.org']);
 		await cwdExeca('git', ['config', 'user.name', 'First Last']);
 
-		await cwdFs.writeFile('package.json', JSON.stringify({
-			packageManager: packageManager === 'npm' ? 'npm@9.6.7' : 'yarn@1.22.19',
-		}));
+		await cwdFs.writeFile(
+			'package.json',
+			JSON.stringify({
+				packageManager: packageManager === 'npm' ? 'npm@9.6.7' : 'yarn@1.22.19',
+			}),
+		);
 		await cwdFs.writeFile('.gitignore', 'node_modules\n');
 		await cwdExeca(packageManager, ['install']);
 		await cwdExeca('git', ['add', '.']);

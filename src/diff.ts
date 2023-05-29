@@ -15,7 +15,7 @@ const dependencyProperties = [
 	'peerDependencies',
 	'dependencies',
 ] as const;
-type DependencyProperties = typeof dependencyProperties[number];
+type DependencyProperties = (typeof dependencyProperties)[number];
 
 type DependencyEntry = Record<string, string>;
 type PackageJson = {
